@@ -127,13 +127,19 @@ const normalizeComplaint = (
 function SLACountdown({
   deadline,
   sla,
+  active = true,
 }: {
   deadline: string;
   sla: string;
+  active?: boolean;
 }) {
   const [now, setNow] = useState(Date.now());
 
   useEffect(() => {
+    if (!active) {
+      return;
+    }
+
     const timer = window.setInterval(() => {
       setNow(Date.now());
     }, 1000);
@@ -141,7 +147,20 @@ function SLACountdown({
     return () => {
       window.clearInterval(timer);
     };
-  }, []);
+  }, [active]);
+
+  if (!active) {
+    return (
+      <div>
+        <p className="font-semibold text-green-600">
+          SLA Stopped
+        </p>
+        <p className="mt-1 text-xs text-slate-500">
+          Complaint Completed
+        </p>
+      </div>
+    );
+  }
 
   const remaining =
     new Date(deadline).getTime() - now;
@@ -999,21 +1018,14 @@ function App() {
                             {/* SLA */}
 
                             <td className="px-5 py-4">
-  {complaint.status === "Resolved" ? (
-    <div>
-      <p className="font-semibold text-green-600">
-        SLA Stopped
-      </p>
-      <p className="mt-1 text-xs text-slate-500">
-        Complaint Resolved
-      </p>
-    </div>
-  ) : (
-    <SLACountdown
-      deadline={complaint.slaDeadline}
-      sla={complaint.sla}
-    />
-  )}
+  <SLACountdown
+    deadline={complaint.slaDeadline}
+    sla={complaint.sla}
+    active={
+      complaint.status !== "Resolved" &&
+      complaint.status !== "Escalated"
+    }
+  />
 </td>
 
                             {/* ACTION */}
@@ -1933,17 +1945,20 @@ function App() {
 
                       </div>
 
-                      {trackedComplaint.status !==
-                        "Resolved" && (
-                        <SLACountdown
-                          deadline={
-                            trackedComplaint.slaDeadline
-                          }
-                          sla={
-                            trackedComplaint.sla
-                          }
-                        />
-                      )}
+                      <SLACountdown
+                        deadline={
+                          trackedComplaint.slaDeadline
+                        }
+                        sla={
+                          trackedComplaint.sla
+                        }
+                        active={
+                          trackedComplaint.status !==
+                            "Resolved" &&
+                          trackedComplaint.status !==
+                            "Escalated"
+                        }
+                      />
 
                     </div>
 
