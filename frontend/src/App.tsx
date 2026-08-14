@@ -999,15 +999,22 @@ function App() {
                             {/* SLA */}
 
                             <td className="px-5 py-4">
-                              <SLACountdown
-                                deadline={
-                                  complaint.slaDeadline
-                                }
-                                sla={
-                                  complaint.sla
-                                }
-                              />
-                            </td>
+  {complaint.status === "Resolved" ? (
+    <div>
+      <p className="font-semibold text-green-600">
+        SLA Stopped
+      </p>
+      <p className="mt-1 text-xs text-slate-500">
+        Complaint Resolved
+      </p>
+    </div>
+  ) : (
+    <SLACountdown
+      deadline={complaint.slaDeadline}
+      sla={complaint.sla}
+    />
+  )}
+</td>
 
                             {/* ACTION */}
 
