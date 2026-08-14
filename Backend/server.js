@@ -121,13 +121,13 @@ Rules:
 
     res.json(complaint);
   } catch (error) {
-    console.error("AI analysis error:", error);
+  console.error("AI analysis error:", error);
 
-    res.status(500).json({
-      success: false,
-      error: "Unable to analyse complaint.",
-    });
-  }
+  res.status(500).json({
+    success: false,
+    error: "Unable to analyse complaint.",
+  });
+}
 });
 
 // --------------------------------------------------
